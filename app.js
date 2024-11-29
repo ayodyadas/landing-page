@@ -64,6 +64,8 @@ app.use(logger((tokens, req, res) => {
 const compression = require("compression");
 app.use(compression());
 
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -72,5 +74,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/newsletter', newsLetter);
+
+
+//error handling
+app.disable('x-powered-by')
+app.use((req, res, next) => {
+    res.status(404).send("Sorry can't find that!")
+  })
+  
+// custom error handler
+app.use((err, req, res, next) => {
+console.error(err.stack)
+res.status(500).send('internal error')
+})
 
 module.exports = app;
